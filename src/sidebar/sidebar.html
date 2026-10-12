@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Subtraverse</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+  <header class="brand">
+    <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+      <rect width="48" height="48" rx="11" fill="currentColor"/>
+      <g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M24 40V26"/><path d="M24 26C24 20 14 20 14 13"/><path d="M24 26C24 20 34 20 34 13"/><path d="M24 26V10"/>
+      </g>
+      <g fill="#fff"><circle cx="14" cy="11" r="3.2"/><circle cx="24" cy="8" r="3.2"/><circle cx="34" cy="11" r="3.2"/></g>
+    </svg>
+    <div>
+      <h1>Subtraverse</h1>
+      <p>指定したURLの配下だけをたどって、一覧化・一括保存します</p>
+    </div>
+  </header>
+
+  <section class="setup">
+    <div class="field">
+      <label for="startUrl">開始URL</label>
+      <div class="row">
+        <input id="startUrl" type="text" spellcheck="false" autocomplete="off" placeholder="https://example.com/docs/index.html">
+        <button id="useTab" type="button" class="quiet" title="いま見ているタブのURLを入れる">現在のタブ</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="scope">取得範囲(このURLで始まるものだけ対象)</label>
+      <input id="scope" type="text" spellcheck="false" autocomplete="off" placeholder="開始URLのあるフォルダが自動で入ります">
+      <p id="scopeHint" class="hint" hidden></p>
+    </div>
+
+    <details class="options">
+      <summary>詳細設定</summary>
+      <div class="grid">
+        <label>最大の深さ<input id="maxDepth" type="number" min="0" max="20"></label>
+        <label>最大件数<input id="maxPages" type="number" min="1" max="5000"></label>
+        <label>取得間隔(ms)<input id="delayMs" type="number" min="0" max="10000" step="50"></label>
+        <label>並列数<input id="concurrency" type="number" min="1" max="6"></label>
+      </div>
+      <label class="check"><input type="checkbox" id="includeAssets">画像・CSS・JS などの付随ファイルも対象にする</label>
+      <label class="check"><input type="checkbox" id="assetsSameOrigin">付随ファイルは、範囲外でも同じサイトなら許可する</label>
+    </details>
+
+    <div class="row actions">
+      <button id="start" type="button" class="primary">一覧を取得</button>
+      <button id="stop" type="button" disabled>停止</button>
+    </div>
+  </section>
+
+  <section class="status" aria-live="polite">
+    <p id="statusText">開始URLを指定して「一覧を取得」を押してください。</p>
+    <progress id="bar" max="100" value="0" hidden></progress>
+  </section>
+
+  <section class="results">
+    <div class="toolbar">
+      <input id="filter" type="search" placeholder="絞り込み(パスの一部)" spellcheck="false">
+      <select id="kind" aria-label="種類">
+        <option value="all">すべて</option>
+        <option value="page">ページ</option>
+        <option value="file">ファイル</option>
+        <option value="asset">付随</option>
+      </select>
+      <select id="sort" aria-label="並び順">
+        <option value="found">発見順</option>
+        <option value="path">パス順</option>
+      </select>
+    </div>
+    <div class="bulk">
+      <button id="selAll" type="button" class="quiet">表示中をすべて選択</button>
+      <button id="selNone" type="button" class="quiet">表示中の選択を外す</button>
+      <span id="selCount"></span>
+    </div>
+    <div id="list" class="list" role="list"></div>
+  </section>
+
+  <footer class="dock">
+    <button id="copy" type="button">URL一覧をコピー</button>
+    <button id="saveList" type="button">URL一覧を保存</button>
+    <button id="zip" type="button" class="primary">選択をZIPで保存</button>
+  </footer>
+
+  <script src="../lib/util.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>
